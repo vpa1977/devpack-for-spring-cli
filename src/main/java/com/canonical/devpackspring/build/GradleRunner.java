@@ -32,8 +32,6 @@ import org.springframework.cli.util.TerminalMessage;
 
 public abstract class GradleRunner {
 
-	private final AddPluginRefactoring refactoring = new AddPluginRefactoring();
-
 	public static boolean run(Path baseDir, PluginDescriptor desc, String task, TerminalMessage message)
 			throws IOException {
 		OutputStream terminalStreamError = new TerminalOutputStream(message,
@@ -80,7 +78,8 @@ public abstract class GradleRunner {
 			throw new RuntimeException(
 					String.format("Neither build.gradle nor build.gradle.kts were found in %s", sourceProject));
 		}
-
+		AddPluginRefactoring refactoring = new AddPluginRefactoring();
+		refactoring.execute(targetProject, desc.id(), desc.version());
 	}
 
 }
