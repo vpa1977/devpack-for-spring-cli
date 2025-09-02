@@ -16,6 +16,7 @@
 
 package com.canonical.devpackspring.rewrite;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -33,14 +34,14 @@ import org.openrewrite.maven.MavenParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EnableRockcraftRefactoring {
+public class AddPluginRefactoring {
 
-	private static final Logger logger = LoggerFactory.getLogger(EnableRockcraftRefactoring.class);
+	private static final Logger logger = LoggerFactory.getLogger(AddPluginRefactoring.class);
 
-	public EnableRockcraftRefactoring() {
+	public AddPluginRefactoring() {
 	}
 
-	public boolean execute(Path baseDir) throws IOException {
+	public boolean execute(Path baseDir, String plugin, String version) throws IOException {
 		InMemoryExecutionContext context = new InMemoryExecutionContext(new Consumer<Throwable>() {
 			@Override
 			public void accept(Throwable throwable) {
@@ -54,7 +55,8 @@ public class EnableRockcraftRefactoring {
 				.filter(x -> x.getSourcePath().toString().equals("build.gradle"))
 				.findAny()
 				.isEmpty();
-			return RecipeUtil.applyRecipe(baseDir, new AddRockcraftGradleRecipe(kotlinDsl), files, context);
+			return RecipeUtil.applyRecipe(baseDir, new AddRockcraftGradleRecipe(kotlinDsl, plugin, version), files,
+					context);
 		}
 		files = parseMaven(baseDir, context);
 		return RecipeUtil.applyRecipe(baseDir, new AddRockcraftMavenRecipe(), files, context);
@@ -78,7 +80,7 @@ public class EnableRockcraftRefactoring {
 		final HashSet<String> gradleNames = new HashSet<>(Arrays.asList("build.gradle", "build.gradle.kts",
 				"settings.gradle", "settings.gradle.kts", "init.gradle", "init.gradle.kts"));
 		List<Path> files = Arrays.stream(baseDir.toFile().listFiles(file -> gradleNames.contains(file.getName())))
-			.map(x -> x.toPath())
+			.map(File::toPath)
 			.toList();
 
 		return p.parse(files, baseDir, context).toList();

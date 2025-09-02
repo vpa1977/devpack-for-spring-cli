@@ -19,7 +19,7 @@ package org.springframework.cli.command;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import com.canonical.devpackspring.rewrite.EnableRockcraftRefactoring;
+import com.canonical.devpackspring.rewrite.AddPluginRefactoring;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cli.util.IoUtils;
@@ -33,7 +33,7 @@ public class RockcraftCommands {
 
 	private final Path workingDir;
 
-	private final EnableRockcraftRefactoring rockcraftService = new EnableRockcraftRefactoring();
+	private final AddPluginRefactoring rockcraftService = new AddPluginRefactoring();
 
 	@Autowired
 	public RockcraftCommands(TerminalMessage terminalMessage) {
@@ -49,7 +49,7 @@ public class RockcraftCommands {
 	@Command(command = "add", description = "Add rockcraft export plugin for the project")
 	public String addRockcraft(@Option(description = "Project path") String path) throws IOException {
 		Path where = (path != null) ? Path.of(path) : workingDir;
-		if (rockcraftService.execute(where)) {
+		if (rockcraftService.execute(where, "io.spring.javaformat", "0.0.43")) {
 			return "Added rockcraft plugin to " + path;
 		}
 		return "Project unchanged.";

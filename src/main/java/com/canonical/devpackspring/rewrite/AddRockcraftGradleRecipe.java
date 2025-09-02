@@ -25,18 +25,14 @@ import org.openrewrite.TreeVisitor;
 
 public class AddRockcraftGradleRecipe extends Recipe {
 
-	private final String PLUGIN_ID = "io.github.rockcrafters.rockcraft";
-
-	private final String PLUGIN_VERSION = "1.0.0";
-
 	private final TreeVisitor<?, ExecutionContext> visitor;
 
-	public AddRockcraftGradleRecipe(boolean kotlin) {
+	public AddRockcraftGradleRecipe(boolean kotlin, String pluginId, String pluginVersion) {
 		if (kotlin) {
-			visitor = new KotlinAddPluginVisitor(PLUGIN_ID, PLUGIN_VERSION);
+			visitor = new KotlinAddPluginVisitor(pluginId, pluginVersion);
 		}
 		else {
-			visitor = new GroovyAddPluginVisitor(PLUGIN_ID, PLUGIN_VERSION);
+			visitor = new GroovyAddPluginVisitor(pluginId, pluginVersion);
 		}
 	}
 
