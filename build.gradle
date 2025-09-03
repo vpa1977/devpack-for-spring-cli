@@ -174,7 +174,7 @@ if (useNative) {
 	graalvmNative {
 		binaries {
 			main {
-				imageName = 'devpack-for-spring'
+				imageName = 'devpack-for-spring-cli'
 			}
 		}
 		metadataRepository {
