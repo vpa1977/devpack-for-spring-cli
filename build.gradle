@@ -191,7 +191,11 @@ if (useNative) {
 		enabled = false
 	}
 
-    tasks.named('checkStyleAot') {
+    tasks.named('checkstyleAotTest') {
+        enabled = false
+    }
+
+    tasks.named('checkstyleAot') {
         enabled = false
     }
 
@@ -199,6 +203,10 @@ if (useNative) {
 
 tasks.named('checkFormatMain') {
     dependsOn(generateGrammarSource)
+}
+
+tasks.named("checkFormatTest") {
+    dependsOn(generateTestGrammarSource)
 }
 
 tasks.withType(CheckFormat).configureEach {
