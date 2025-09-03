@@ -1,10 +1,19 @@
 grammar GradlePlugin;
 
-sequence : ANY PLUGIN LBRACE ANY RBRACE ANY EOF;
+@header {
+package com.canonical.devpackspring.build.grammar;
+}
 
-PLUGIN     : 'plugin';
+sequence : anything (plugin anything)? EOF;
+
+plugin: PLUGINS LBRACE plugin_block RBRACE;
+
+plugin_block: (~RBRACE)*;
+
+anything: (~(PLUGINS | EOF))*;
+
+PLUGINS     : 'plugins';
 LBRACE     : '{';
 RBRACE     : '}';
 WHITESPACE : [ \t\r\n]+ -> skip;
-PLUGIN_BLOCK : . ;
 ANY        : . ;

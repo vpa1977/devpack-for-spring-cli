@@ -24,8 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import com.canonical.devpackspring.build.gradle.GradleAdapter;
+import com.canonical.devpackspring.build.gradle.Refactoring;
 import com.canonical.devpackspring.build.gradle.TempProjectAdapter;
-import com.canonical.devpackspring.rewrite.AddPluginRefactoring;
 import org.jline.utils.AttributedStyle;
 
 import org.springframework.cli.util.TerminalMessage;
@@ -66,20 +66,16 @@ public abstract class GradleRunner {
 	}
 
 	private static void appendPlugin(Path sourceProject, Path targetProject, PluginDescriptor desc) throws IOException {
-		if (Files.exists(sourceProject.resolve("build.gradle"))) {
-			Files.copy(sourceProject.resolve("build.gradle"), targetProject.resolve("build.gradle"),
-					StandardCopyOption.REPLACE_EXISTING);
+		for (var file : new String[] { "build.gradle", "build.gradle.kts" }) {
+			if (Files.exists(sourceProject.resolve(file))) {
+				Files.copy(sourceProject.resolve(file), targetProject.resolve(file),
+						StandardCopyOption.REPLACE_EXISTING);
+				Refactoring.appendPlugin(targetProject.resolve(file), desc.id(), desc.version());
+				return;
+			}
 		}
-		else if (Files.exists(sourceProject.resolve("build.gradle.kts"))) {
-			Files.copy(sourceProject.resolve("build.gradle.kts"), targetProject.resolve("build.gradle.kts"),
-					StandardCopyOption.REPLACE_EXISTING);
-		}
-		else {
-			throw new RuntimeException(
-					String.format("Neither build.gradle nor build.gradle.kts were found in %s", sourceProject));
-		}
-		AddPluginRefactoring refactoring = new AddPluginRefactoring();
-		refactoring.execute(targetProject, desc.id(), desc.version());
+		throw new RuntimeException(
+				String.format("Neither build.gradle nor build.gradle.kts were found in %s", sourceProject));
 	}
 
 }
