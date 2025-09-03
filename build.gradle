@@ -175,7 +175,8 @@ if (useNative) {
 		binaries {
 			main {
 				imageName = 'devpack-for-spring-cli'
-			}
+                sharedLibrary = false
+            }
 		}
 		metadataRepository {
 			enabled = true
